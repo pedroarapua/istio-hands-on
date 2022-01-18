@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bets-vs
+spec:
+  hosts:
+    - bets
+    - pedroarapua.com
+  gateways:
+    - bets-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/bets
+      route:
+        - destination:
+            host: bets # service name of service manifest
+            port:
+              number: 9999 # port number of service manifest
+            subset: v1 # used to route traffic in destination rule
+          weight: 100

@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bets-vs
+spec:
+  hosts:
+    - bets
+    - pedroarapua.com
+  gateways:
+    - bets-gateway
+  http:
+    - fault:
+        delay:
+          fixedDelay: 3s
+          percentage:
+            value: 100
+      match:
+        - headers:
+            x-http-delay:
+              exact: "yes"
+      route:
+        - destination:
+            host: bets
+            subset: v1
+    - match:
+        - uri:
+            prefix: /api/bets
+      route:
+        - destination:
+            host: bets
+            port:
+              number: 9999
+            subset: v1
+          weight: 100

@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: bets-authz
+spec:
+  selector:
+    matchLabels:
+      app: bets
+      version: v1
+  rules:
+    - to:
+        - operation:
+            methods: ["GET","POST","PUT","DELETE","OPTIONS"]
+            paths: ["/api/bets*"]
+      when:
+        - key: request.auth.claims[scope]
+          values: ["bet:write"]
